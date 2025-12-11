@@ -11,9 +11,11 @@ import com.justme.weatherapp.domain.location.LocationTracker
 import com.justme.weatherapp.domain.repository.WeatherRepository
 import com.justme.weatherapp.domain.util.Resource
 import com.justme.weatherapp.presentation.WeatherState
-
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
 
@@ -33,7 +35,13 @@ class WeatherViewModel @Inject constructor(
                 error = null
             )
             locationTracker.getCurrentLocation()?.let { location ->
-                val locationName = getLocationName(context, location.latitude, location.longitude)
+                val locationName = try {
+                    getLocationName(context, location.latitude, location.longitude)
+                } catch (e: Exception) {
+                    // Fail-safe: if geocoding fails, keep a user-friendly message
+                    "Unknown location"
+                }
+
                 when (val result =
                     repository.getWeatherData(location.latitude, location.longitude)) {
                     is Resource.Success -> {
@@ -63,14 +71,26 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    private fun getLocationName(context: Context, latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-        return if (addresses?.isNotEmpty() == true) {
-            addresses[0].locality ?: addresses[0].subAdminArea ?: addresses[0].adminArea
-            ?: addresses[0].countryName ?: "Unknown location"
-        } else {
-            "Unknown location"
+    private suspend fun getLocationName(context: Context, latitude: Double, longitude: Double): String =
+        withContext(Dispatchers.IO) {
+            try {
+                if (!Geocoder.isPresent()) return@withContext "Unknown location"
+
+                val geocoder = Geocoder(context, Locale.getDefault())
+                val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                if (addresses?.isNotEmpty() == true) {
+                    addresses[0].locality
+                        ?: addresses[0].subAdminArea
+                        ?: addresses[0].adminArea
+                        ?: addresses[0].countryName
+                        ?: "Unknown location"
+                } else {
+                    "Unknown location"
+                }
+            } catch (e: IOException) {
+                "Unknown location"
+            } catch (e: IllegalArgumentException) {
+                "Unknown location"
+            }
         }
-    }
 }
