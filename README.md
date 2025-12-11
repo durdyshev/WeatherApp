@@ -29,12 +29,6 @@ The app retrieves the user's current location, fetches real-time weather data fr
 | **Location** | Fused Location Provider, Geocoder |
 
 ---
-## 🔐 Permissions Used
-- ACCESS_COARSE_LOCATION
-- ACCESS_FINE_LOCATION
-- ACCESS_BACKGROUND_LOCATION
-
----
 
 ## 📸 Screenshots  
 <p float="left">
@@ -42,6 +36,12 @@ The app retrieves the user's current location, fetches real-time weather data fr
 </p>
 ---
 
+## 🔐 Permissions Used
+- ACCESS_COARSE_LOCATION
+- ACCESS_FINE_LOCATION
+- ACCESS_BACKGROUND_LOCATION
+
+---
 
 ## 🚀 Getting Started
 
