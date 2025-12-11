@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +37,7 @@ import com.justme.weatherapp.domain.weather.ForecastItem
 import com.justme.weatherapp.ui.theme.ColorGradient1
 import com.justme.weatherapp.ui.theme.ColorGradient2
 import com.justme.weatherapp.ui.theme.ColorGradient3
+import com.justme.weatherapp.ui.theme.ColorSurface
 import com.justme.weatherapp.ui.theme.ColorTextPrimary
 import com.justme.weatherapp.ui.theme.ColorTextPrimaryVariant
 import com.justme.weatherapp.ui.theme.ColorTextSecondary
@@ -123,7 +125,10 @@ private fun Forecast(
                 )
             )
         } else {
-            modifier
+            modifier.background(
+                shape = RoundedCornerShape(percent = 50),
+                brush = SolidColor(ColorSurface)
+            )
         }
     }
 
@@ -187,9 +192,10 @@ private fun Forecast(
             text = item.temperature,
             letterSpacing = 0.sp,
             style = temperatureTextStyle,
+            fontSize = 18.sp
         )
         Spacer(
-            modifier = Modifier.height(8.dp)
+            modifier = Modifier.height(12.dp)
         )
         AirQualityIndicator(
             value = item.airQuality,
