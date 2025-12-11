@@ -45,7 +45,7 @@ The app retrieves the user's current location, fetches real-time weather data fr
 
 ## 🚀 Getting Started
 
-#Api-Key
+# Api-Key
 
 Get your api key here "https://open-meteo.com/"
 
